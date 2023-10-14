@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define facil 20
+#define medio 15
+#define dificil 6
+
 int main(void) {
   srand(time(0));
   int numerosecreto = rand() % 100;
@@ -11,7 +15,13 @@ int main(void) {
   int totaldetentativas;
   double pontos = 1000;
   int tentativa;
+  int linferior, lsuperior;
+  int jogardnv = 1;
+  int ultimochute;
 
+  while (jogarNovamente) {
+    pontos = 1000;
+  printf("***********************************\n");
   printf("************************************");
   printf("\n* Bem vindo ao jogo de adivinhação *\n");
   printf("************************************\n");
@@ -21,25 +31,44 @@ int main(void) {
   printf("Escolha:");
   scanf("%d", &nivel);
 
+  
   switch (nivel) {
     case 1:
-      totaldetentativas = 20;
+      totaldetentativas = facil;
       break;
     case 2:
-      totaldetentativas = 15;
+      totaldetentativas = medio;
       break;
     case 3:
-      totaldetentativas = 6;
+      totaldetentativas = dificil;
       break;
     default:
       printf("\nValor inválido\n");
       return 1;
   }
 
+  printf("\nDigite o limite inferior para o número aleatório: ");
+  scanf("%d", &linferior);
+  printf("Digite o limite superior para o número aleatório: ");
+  scanf("%d", &lsuperior);
+
+
+  if (linferior >= lsuperior | linferior == lsuperior) {
+    printf("O limite inferior deve ser menor que o limite superior, e eles não podem ser iguais.\n");
+  }
+  numerosecreto = rand() % (lsuperior - linferior + 1) + linferior;
+
   for (tentativa = 1; tentativa <= totaldetentativas; tentativa++) {
     printf("\nTentativas %d de %d\n", tentativa, totaldetentativas);
+
     printf("\nQual seu chute?\n");
     scanf("%d", &chute);
+
+    if (chute == ultimochute) {
+        printf("\nVocê já jogou esse número. Tente novamente.\n");
+        tentativa--;
+        continue;
+    }
 
     if (chute > numerosecreto) {
       printf("\nSeu chute foi maior que o número secreto!\n");
@@ -53,20 +82,30 @@ int main(void) {
       continue;
     }
 
+    ultimochute = chute;
+
     acerto = chute == numerosecreto;
     if (acerto) {
       printf("\nParabéns você acertou\n");
       break;
-    } 
+    }
   }
 
   if (tentativa > totaldetentativas) {
-    printf("\nNão foi dessa vez, tente novamente :(\n");
     double pontosperdidos = abs(chute - numerosecreto) / 2.0;
     pontos = pontos - pontosperdidos;
+    printf("\nNão foi dessa vez :( Tente novamente!\n");
     printf("O número secreto era: %d\n", numerosecreto);
     printf("Você fez %.2f pontos. Até a próxima!\n\n", pontos);
+  } else {
+    double pontosperdidos = abs(chute - numerosecreto) / 2.0;
+    pontos = pontos - pontosperdidos;
+    printf("Você fez %.2f pontos. Até a próxima!\n\n", pontos);
   }
+
+    printf("\nDeseja jogar novamente? (Digite 1 para sim, 0 para não): ");
+        scanf("%d", &jogardnv);
+    }
 
   return 0;
 }
